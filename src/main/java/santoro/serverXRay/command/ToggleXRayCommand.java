@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import santoro.serverXRay.session.SessionManager;
+import santoro.serverXRay.util.ActionBarUtil;
 
 public class ToggleXRayCommand implements CommandExecutor {
 
@@ -19,7 +20,7 @@ public class ToggleXRayCommand implements CommandExecutor {
         if (!(sender instanceof Player player)) return true;
 
         sessionManager.toggle(player);
-        player.sendMessage(sessionManager.isActive(player) ?
+        ActionBarUtil.send(player, sessionManager.isActive(player) ?
                 "§aXRay activated." :
                 "§cXRay deactivated.");
         return true;

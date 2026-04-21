@@ -13,6 +13,7 @@ import santoro.serverXRay.config.CheckConfig;
 import santoro.serverXRay.service.CurrencyService;
 import santoro.serverXRay.service.ItemMatcherService;
 import santoro.serverXRay.session.SessionManager;
+import santoro.serverXRay.util.ActionBarUtil;
 
 public class CheckInteractListener implements Listener {
 
@@ -65,7 +66,7 @@ public class CheckInteractListener implements Listener {
         }
 
         if (sessionManager.isActive(player)) {
-            player.sendMessage("§c你当前已经处于透视状态，请等待结束后再使用。");
+            ActionBarUtil.send(player, "§c你当前已经处于透视状态，请等待结束后再使用。");
             return;
         }
 
@@ -76,12 +77,12 @@ public class CheckInteractListener implements Listener {
         );
 
         if (!charge.isSuccess()) {
-            player.sendMessage(charge.getMessage());
+            ActionBarUtil.send(player, charge.getMessage());
             return;
         }
 
         int durationTicks = checkConfig.getDurationTicks();
         sessionManager.activateTimed(player, durationTicks);
-        player.sendMessage("§a透视已开启，将在 §e" + (durationTicks / 20.0D) + " §a秒后关闭。");
+        ActionBarUtil.send(player, "§a透视已开启，将在 §e" + (durationTicks / 20.0D) + " §a秒后关闭。");
     }
 }
