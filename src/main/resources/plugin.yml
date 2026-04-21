@@ -4,6 +4,11 @@ main: santoro.serverXRay.ServerXRay
 api-version: '1.21'
 author: lucas-santoro
 description: A XRay plugin for servers
+softdepend:
+  - Vault
+  - PlayerPoints
+  - MythicMobs
+  - NBTAPI
 
 commands:
   xray:

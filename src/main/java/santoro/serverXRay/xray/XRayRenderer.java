@@ -48,8 +48,13 @@ public class XRayRenderer {
     }
 
     public void stop() {
-        if (!player.isOnline() || !player.isValid()) return;
-        if (task != null) task.cancel();
-        highlightService.clear(player);
+        if (task != null) {
+            task.cancel();
+            task = null;
+        }
+
+        if (player.isOnline() && player.isValid()) {
+            highlightService.clear(player);
+        }
     }
 }

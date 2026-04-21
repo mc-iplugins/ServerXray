@@ -52,6 +52,10 @@
 
     <repositories>
         <repository>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+        </repository>
+        <repository>
             <id>papermc-repo</id>
             <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
@@ -85,10 +89,32 @@
         <dependency>
             <groupId>com.comphenix.protocol</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>5.1.0</version>
+            <version>5.3.0</version>
             <scope>provided</scope>
         </dependency>
-
-
+        <dependency>
+            <groupId>io.lumine.mythic</groupId>
+            <artifactId>MythicMobsPremium</artifactId>
+            <version>5.11.2-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
+            <version>2.13.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.MilkBowl</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.7</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.black_ixx</groupId>
+            <artifactId>playerpoints</artifactId>
+            <version>3.3.3</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

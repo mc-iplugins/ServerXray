@@ -1,6 +1,9 @@
 package santoro.serverXRay.session;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
+import santoro.serverXRay.ServerXRay;
 import santoro.serverXRay.service.BlockFinderService;
 import santoro.serverXRay.service.HighlightService;
 import santoro.serverXRay.xray.XRayRenderer;
@@ -13,7 +16,7 @@ public class SessionManager {
 
     private final BlockFinderService finderService;
     private final HighlightService highlightService;
-    private final Map<UUID, XRayRenderer> sessions = new HashMap<>();
+    private final Map<UUID, Session> sessions = new HashMap<>();
 
     public SessionManager(BlockFinderService finderService, HighlightService highlightService) {
         this.finderService = finderService;
@@ -33,15 +36,78 @@ public class SessionManager {
     }
 
     public void enable(Player player) {
-        XRayRenderer renderer = new XRayRenderer(player, finderService, highlightService);
-        sessions.put(player.getUniqueId(), renderer);
-        renderer.start();
+        Session session = getOrCreateSession(player);
+        cancelAutoDisable(session);
+    }
+
+    public void activateTimed(Player player, int durationTicks) {
+        if (durationTicks <= 0) {
+            return;
+        }
+
+        Session session = getOrCreateSession(player);
+        scheduleAutoDisable(player, session, durationTicks);
     }
 
     public void disable(Player player) {
-        XRayRenderer renderer = sessions.remove(player.getUniqueId());
-        if (renderer != null) {
-            renderer.stop();
+        Session session = sessions.remove(player.getUniqueId());
+        if (session == null) {
+            return;
+        }
+
+        cancelAutoDisable(session);
+        session.renderer.stop();
+    }
+
+    public void disableAll() {
+        for (Session session : sessions.values()) {
+            cancelAutoDisable(session);
+            session.renderer.stop();
+        }
+        sessions.clear();
+    }
+
+    private Session getOrCreateSession(Player player) {
+        Session existing = sessions.get(player.getUniqueId());
+        if (existing != null) {
+            return existing;
+        }
+
+        XRayRenderer renderer = new XRayRenderer(player, finderService, highlightService);
+        renderer.start();
+
+        Session session = new Session(renderer);
+        sessions.put(player.getUniqueId(), session);
+        return session;
+    }
+
+    private void scheduleAutoDisable(Player player, Session session, int durationTicks) {
+        cancelAutoDisable(session);
+        UUID uuid = player.getUniqueId();
+
+        session.autoDisableTask = Bukkit.getScheduler().runTaskLater(ServerXRay.get(), () -> {
+            Session current = sessions.get(uuid);
+            if (current != session) {
+                return;
+            }
+            disable(player);
+        }, durationTicks);
+    }
+
+    private void cancelAutoDisable(Session session) {
+        if (session.autoDisableTask != null) {
+            session.autoDisableTask.cancel();
+            session.autoDisableTask = null;
+        }
+    }
+
+    private static final class Session {
+
+        private final XRayRenderer renderer;
+        private BukkitTask autoDisableTask;
+
+        private Session(XRayRenderer renderer) {
+            this.renderer = renderer;
         }
     }
 }

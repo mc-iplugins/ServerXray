@@ -1,0 +1,13 @@
+check:
+  # 持续时间（ticks），20 ticks = 1 秒
+  duration: 600
+
+  # 物品 lore 关键字（忽略颜色码，contains 匹配）
+  lore-keywords:
+    - "洞察之眼"
+
+  cost:
+    # Vault 经济花费（<=0 表示不检查）
+    vault: 100.0
+    # PlayerPoints 花费（<=0 表示不检查）
+    playerpoints: 10
